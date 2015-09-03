@@ -1,0 +1,4 @@
+# Inventory
+
+[localhost]
+localhost ansible_connection=local

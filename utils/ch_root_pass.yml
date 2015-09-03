@@ -1,0 +1,26 @@
+---
+# file: utils/ch_root_pass.yml
+# changes the root password on all servers
+# password is provided as extra variable 'password'
+# example:
+# % ansible-playbook -i inventory ch_root_pass.yml -k -v \
+#     --extra-vars="user=foo,password=bar"
+
+- hosts: servers
+  remote_user: root
+  gather_facts: no
+
+  vars:
+  - user: root
+
+  tasks:
+  - name: generate SHA-512 hash
+    local_action:
+      module: command /usr/bin/mkpasswd --method=SHA-512 {{password}}
+    register: result
+
+  - name: change root password
+    user:
+      name: "{{user}}"
+      password: "{{result.stdout}}"
+      update_password: always
